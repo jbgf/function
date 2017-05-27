@@ -1,3 +1,69 @@
+/*对象深拷贝*/
+inputHistory.prototype.deepCopy= function(source) { 
+      var that = this;
+      var result={};
+      for (var key in source) {
+            result[key] = typeof source[key]==='object'? that.deepCopy(source[key]): source[key];
+         } 
+         return result; 
+}
+
+/*居中*/
+function makeCenter($obj){               
+    var $parent = $(this).parent();
+    $obj.css({
+       "top": function () {
+           return ($parent.height() - $(this).height()) / 2 + "px";
+       },
+       "left": function () {
+           return ($parent.width() - $(this).width()) / 2 + "px";
+       }
+    })    
+}
+
+/*等高*/
+/*高度统一的问题*/
+  var _config = [
+    {wrapper:".iot_content_row",children:".bd img",class:".height_d"},
+    /*{selector:"#rightSideBar_wrapper",children:"",class0:".rightSide",class1:".leftContent"}, */
+    {wrapper:".product_article",children:"",class:".article_zone"} 
+  ];
+  var _config = [
+      {wrapper:".quyu",children:".bd img",class:".text_p",mode:1},
+      {wrapper:".product_article",children:"",class:".article_zone",mode:0} 
+  ];
+  function equalHeight(options){
+      jQuery(options).each(function(i,e){
+        var heightArr = [],
+            max = 0; 
+        if(jQuery(e.wrapper).length == 0 || (!e.mode)){return };
+        if(e.mode == 0){
+              jQuery(e.wrapper).each(function(){
+          
+                  var $eles = jQuery(this).find(e.class);
+                  
+                      $eles.each(function(index,element){
+                          var height = jQuery(element).height();
+                              height > max ? max = height : "";
+                      })  
+                      $eles.height(max);
+                      if(e.children !="")$eles.find(e.children).height(max);
+                  })  
+        }
+        if(e.mode == 1){
+              var $eles = jQuery(e.wrapper).find(e.class);
+              
+                  $eles.each(function(index,element){
+                      var height = jQuery(element).height();
+                          height > max ? max = height : "";
+                  })  
+                  $eles.height(max);
+                  if(e.children !="")$eles.find(e.children).height(max);
+        }
+      })
+  }
+  equalHeight(_config);
+
 /*定时器等待获取异步数据*/
 pagination.prototype.ini = function(){
         var that = this;
@@ -10,7 +76,6 @@ pagination.prototype.ini = function(){
           }
         };
 };
-
 
 /*定时器等待获取异步数据*/
 
@@ -53,7 +118,7 @@ pagination.prototype.ini = function(){
     $("ul").innerHTML = htmlList;
 /*template*/
 
-/*jquery 获取触屏动作*/
+
 
   /*获取上传的文件 start*/
 
@@ -260,6 +325,58 @@ function rootFontSize(docElem,win){
         setFontSize();
 }
 
+/*调整字体大小2*/
+  var g_rem = 20,
+              rate = 25;
+        (function(win){
+            var orientationX = false; //是否横屏进来
+            if(win.orientation == 90 || win.orientation == -90){
+                orientationX = true;
+            }
+            var docEl = win.document.documentElement,tid;
+            function refreshRem1(){
+                g_rem = docEl.getBoundingClientRect().width/rate;
+                !g_rem && (g_rem = 20);
+                docEl.style.fontSize = g_rem + 'px';
+            }
+            function refreshRem2(){
+                g_rem = docEl.getBoundingClientRect().width/rate;
+                if(!g_rem){
+                    return refreshRem1();
+                }
+                var width = docEl.getBoundingClientRect().width;
+                var d = win.document.createElement('div');
+                d.style.width = '1rem';
+                d.style.display = "none";
+                docEl.firstElementChild.appendChild(d);
+                var defaultFontSize = parseFloat(window.getComputedStyle(d, null).getPropertyValue('width'));
+
+                docEl.firstElementChild.removeChild(d);
+                docEl.style.fontSize = (g_rem/defaultFontSize)*100 + '%';
+            }
+
+            var refreshRem = refreshRem2;
+            try{
+                win.addEventListener("orientationchange", function(){//触发手机横屏竖屏事件
+                    if(orientationX){
+                        location.reload();
+                    }
+                }, false);
+            }catch(e){
+                
+            }
+            
+            win.addEventListener('pageshow', function(e) {
+                if (e.persisted) {
+                    clearTimeout(tid);
+                    tid = setTimeout(refreshRem, 100);
+                }
+            }, false);
+            refreshRem();
+        })(window);  
+
+/*调整字体大小2 end*/
+
 //计时3分钟无操作跳转，若操作则重新计时start；
 window.onload = function(){
       waitJump(3,"index.html");
@@ -289,26 +406,31 @@ window.onload = function(){
       showTime();
 }	        	
 		
-		function showTime(){ 
-	        var show_day=new Array('星期日','星期一','星期二','星期三','星期四','星期五','星期六'); 
-	        var time=new Date(); 
-	        var year=time.getFullYear(); 
-	        var month=time.getMonth(); 
-	        var date=time.getDate(); 
-	        var day=time.getDay(); 
-	        var hour=time.getHours(); 
-	        var minutes=time.getMinutes(); 
-	        var second=time.getSeconds(); 
-	        month=month+1; 
-	        month<10?month='0'+month:month; 
-	        
-	        hour<10?hour='0'+hour:hour; 
-	        minutes<10?minutes='0'+minutes:minutes; 
-	        second<10?second='0'+second:second; 
-	        var now_time=year+'年'+month+'月'+date+'日'+' '+show_day[day]+' '+hour+':'+minutes+':'+second; 
-	        document.getElementById('showtime').innerHTML=now_time; 
-	        setTimeout(showTime,1000); 
-        };
+function showTime(){ 
+            var show_day=new Array('星期日','星期一','星期二','星期三','星期四','星期五','星期六'); 
+            var time=new Date(); 
+            var year=time.getFullYear(); 
+            var month=time.getMonth(); 
+            var date=time.getDate(); 
+            var day=time.getDay(); 
+            var hour=time.getHours(); 
+            var minutes=time.getMinutes(); 
+            var second=time.getSeconds(); 
+            month=month+1; 
+            month<10?month='0'+month:month; 
+            
+            hour<10?hour='0'+hour:hour; 
+            minutes<10?minutes='0'+minutes:minutes; 
+            second<10?second='0'+second:second; 
+            var now_time=year+'年'+month+'月'+date+'日'+' '+show_day[day]+' '+hour+':'+minutes+':'+second; 
+            var showTimeDiv = document.getElementById('showtime');
+                if(showTimeDiv){
+                    showTimeDiv.innerHTML = now_time; 
+                    setTimeout(showTime,1000);  
+                }else{
+                  return false;
+                }
+};
 
 
 /*jquery 检测鼠标滚动，以及触屏动作*/
