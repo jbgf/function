@@ -246,6 +246,43 @@ function isMobileDevice(){
     <input type="checkbox" name="item">
     <input type="checkbox" name="item">
   </form>*/
+     window.onload = function(){
+        var table = $("#show_newsTW table");
+        var tableCheckBoxs = table.find("input[type=checkbox]");
+        var num = tableCheckBoxs.length;
+        var flag;
+            $("#all").on("click",function(){
+                flag = is_allCheck(table,num);
+                if(!flag){
+                  tableCheckBoxs.prop("checked",true)  
+                }else{
+                  tableCheckBoxs.prop("checked",false)  
+                }
+                
+            });
+            $("#delete").on("click",function(){
+                
+                tableCheckBoxs.prop("checked",false)  
+                $("#all").prop("checked",false)  
+                flag = false;
+            });
+            tableCheckBoxs.on("click",function(){
+                var f = is_allCheck(table,num);
+                if(f){
+                  $("#all").prop("checked",true)  
+                }else{
+                  $("#all").prop("checked",false)  
+                }
+            })
+
+            function is_allCheck(selector,num){
+              var checked = $(selector).find("input[type=checkbox]:checked");
+              var flag = (checked.length == num);
+              return flag;
+            }
+    } 
+
+
      $(function(){
           var checkAll = $("#checkAll") ;
           var checkBoxs = $("input[name=item]");
